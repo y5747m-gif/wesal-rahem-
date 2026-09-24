@@ -1,0 +1,30 @@
+# deps
+node_modules/
+.pnp
+.pnp.js
+
+# builds
+dist/
+build/
+out/
+.expo/
+web-build/
+*.tsbuildinfo
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# local dev database (embedded PostgreSQL data dir)
+.tmp/
+.pgdata/
+.pg-sockets/
+*.log
+logs/
+
+# misc
+.DS_Store
+coverage/
+.idea/
+.vscode/

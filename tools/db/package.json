@@ -1,0 +1,16 @@
+{
+  "name": "@wesal/local-db",
+  "version": "0.1.0",
+  "private": true,
+  "description": "تشغيل PostgreSQL حقيقي محليًا لأغراض التطوير (بدون Docker)",
+  "type": "module",
+  "scripts": {
+    "start": "node db.mjs",
+    "up": "node db.mjs up",
+    "down": "node db.mjs down",
+    "status": "node db.mjs status"
+  },
+  "dependencies": {
+    "embedded-postgres": "17.10.0-beta.17"
+  }
+}
