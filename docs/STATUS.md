@@ -1,6 +1,11 @@
 # حالة التنفيذ — وصال (المرحلة 1 / MVP)
 
-> آخر تحديث: 2026‑09‑24
+> آخر تحديث: 2026‑09‑25
+
+## الصفحة الرئيسية
+
+`https://wesal-rahem.vercel.app/` كانت تعيد `404 NOT_FOUND` لأن مخرجات Vercel لا تحتوي `index.html`.
+الصفحة العربية الآن في `public/index.html`، و`vercel.json` يضبط `outputDirectory` على `public`.
 
 ## ✅ مُنجَز ومُتحقَّق منه فعليًا
 

@@ -4,7 +4,13 @@ node_modules/
 .pnp.js
 
 # builds
-dist/
+dist/*
+!dist/index.html
+!dist/404.html
+!dist/hero.jpg
+!dist/favicon.svg
+!dist/health.json
+!dist/robots.txt
 build/
 out/
 .expo/

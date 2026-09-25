@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#174A3A" />
+    <meta
+      name="description"
+      content="وصال يذكّرك بالاطمئنان على من تحب، بهدوء وبدون مراقبة. لا تجعل الانشغال يجعلك تنسى من تحب."
+    />
+    <meta property="og:title" content="وصال — لا تجعل الانشغال يجعلك تنسى من تحب" />
+    <meta
+      property="og:description"
+      content="من يحتاج منك أن تطمئن عليه اليوم؟ جدول بسيط، تذكير لطيف، وموافقة قبل أي تنبيه."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar" />
+    <meta property="og:url" content="https://wesal-rahem.vercel.app/" />
+    <meta property="og:image" content="https://wesal-rahem.vercel.app/hero.jpg" />
+    <title>وصال — لا تجعل الانشغال يجعلك تنسى من تحب</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #fff9f3;
+        --bg-2: #fff3e8;
+        --surface: rgba(255, 255, 255, 0.78);
+        --surface-solid: #ffffff;
+        --primary: #174a3a;
+        --primary-soft: #2c6b54;
+        --gold: #f4c95d;
+        --text: #182019;
+        --muted: #3e4a44;
+        --border: #eadfd3;
+        --heart: #e86a6a;
+        --checked: #55c98a;
+        --due: #f4c95d;
+        --upcoming: #c9d2cb;
+        --shadow: 0 24px 60px rgba(23, 74, 58, 0.08);
+        --radius: 28px;
+        --font: "Cairo", "Noto Naskh Arabic", "Geeza Pro", "Segoe UI", Tahoma, sans-serif;
+      }
+
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #101411;
+        --bg-2: #1e2a22;
+        --surface: rgba(24, 32, 26, 0.78);
+        --surface-solid: #18201a;
+        --primary: #65d59a;
+        --primary-soft: #8ee0b4;
+        --gold: #f3cc72;
+        --text: #f7f7f2;
+        --muted: #c5d0c9;
+        --border: #2a352d;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          color-scheme: dark;
+          --bg: #101411;
+          --bg-2: #1e2a22;
+          --surface: rgba(24, 32, 26, 0.78);
+          --surface-solid: #18201a;
+          --primary: #65d59a;
+          --primary-soft: #8ee0b4;
+          --gold: #f3cc72;
+          --text: #f7f7f2;
+          --muted: #c5d0c9;
+          --border: #2a352d;
+          --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        }
+        :root:not([data-theme="light"]) .st-checked { color: #b7f0d0; }
+        :root:not([data-theme="light"]) .st-due { color: #ffe7a3; }
+        :root:not([data-theme="light"]) .solid,
+        :root:not([data-theme="light"]) .check,
+        :root:not([data-theme="light"]) .num { color: #102018; }
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font);
+        color: var(--text);
+        background:
+          radial-gradient(900px 480px at 100% -10%, rgba(244, 201, 93, 0.35), transparent 60%),
+          radial-gradient(800px 520px at -10% 20%, rgba(85, 201, 138, 0.18), transparent 55%),
+          var(--bg);
+        line-height: 1.8;
+      }
+      img { max-width: 100%; display: block; }
+      a { color: inherit; }
+      button, input, select { font: inherit; }
+      .skip {
+        position: absolute;
+        inset-inline-start: 16px;
+        top: -40px;
+        background: var(--primary);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 12px;
+        z-index: 5;
+      }
+      .skip:focus { top: 12px; }
+
+      .wrap { width: min(1120px, calc(100% - 32px)); margin-inline: auto; }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        backdrop-filter: blur(16px);
+        background: color-mix(in srgb, var(--bg) 78%, transparent);
+        border-bottom: 1px solid transparent;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 72px;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; }
+      .mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: var(--primary);
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+      :root[data-theme="dark"] .mark,
+      :root:not([data-theme="light"]) .mark { color: #102018; }
+      .nav-links { display: flex; align-items: center; gap: 8px; }
+      .nav-links a, .ghost, .solid {
+        border-radius: 999px;
+        text-decoration: none;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 16px;
+      }
+      .nav-links a { color: var(--muted); font-weight: 700; }
+      .nav-links a:hover { color: var(--text); }
+      .ghost, .solid { border: 1px solid var(--border); background: var(--surface-solid); color: var(--text); cursor: pointer; }
+      .solid {
+        background: var(--primary);
+        color: #fff9f3;
+        border-color: transparent;
+        font-weight: 800;
+      }
+      :root[data-theme="dark"] .solid { color: #102018; }
+      .hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 36px; align-items: center; padding: 42px 0 18px; }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: color-mix(in srgb, var(--gold) 35%, var(--surface-solid));
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+      h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.25; margin: 0 0 12px; letter-spacing: 0; }
+      .lede { font-size: 20px; color: var(--muted); margin: 0 0 8px; }
+      .en { font-size: 15px; color: var(--muted); margin: 0 0 22px; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+      .photo {
+        border-radius: 32px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        background: var(--bg-2);
+      }
+      .photo img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; }
+      section { padding: 28px 0; }
+      h2 { font-size: clamp(26px, 3vw, 36px); line-height: 1.35; margin: 0 0 8px; }
+      .sub { color: var(--muted); margin: 0 0 18px; }
+      .board, .card, .principle, .step, .person {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+      .board { border-radius: var(--radius); padding: 22px; }
+      .board-head, .person, .form-row, .legend { display: flex; gap: 12px; align-items: center; }
+      .board-head { justify-content: space-between; margin-bottom: 14px; }
+      .people { display: grid; gap: 10px; }
+      .person { border-radius: 22px; padding: 14px; background: var(--surface-solid); }
+      .avatar {
+        width: 52px; height: 52px; border-radius: 18px; display: grid; place-items: center;
+        font-weight: 800; background: var(--bg-2); flex: none;
+      }
+      .person h3 { margin: 0; font-size: 18px; }
+      .person p { margin: 0; color: var(--muted); font-size: 14px; }
+      .grow { flex: 1; min-width: 0; }
+      .pill {
+        border-radius: 999px; padding: 4px 10px; font-size: 13px; font-weight: 800;
+        display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+      }
+      .dot { width: 9px; height: 9px; border-radius: 99px; background: currentColor; }
+      .st-checked { background: color-mix(in srgb, var(--checked) 22%, var(--surface-solid)); color: #14643a; }
+      .st-due { background: color-mix(in srgb, var(--due) 35%, var(--surface-solid)); color: #6a4b08; }
+      .st-upcoming { background: color-mix(in srgb, var(--upcoming) 45%, var(--surface-solid)); color: var(--muted); }
+      :root[data-theme="dark"] .st-checked { color: #b7f0d0; }
+      :root[data-theme="dark"] .st-due { color: #ffe7a3; }
+      .check {
+        border: 0; border-radius: 999px; min-height: 44px; padding: 0 14px; cursor: pointer;
+        background: var(--primary); color: #fff9f3; font-weight: 800;
+      }
+      :root[data-theme="dark"] .check { color: #102018; }
+      .check[disabled] { opacity: 0.7; cursor: default; }
+      form { display: grid; gap: 10px; margin-top: 16px; }
+      .form-row { align-items: end; flex-wrap: wrap; }
+      label { display: grid; gap: 6px; font-weight: 700; flex: 1; min-width: 140px; }
+      input, select {
+        min-height: 48px; border-radius: 14px; border: 1px solid var(--border);
+        background: var(--surface-solid); color: var(--text); padding: 0 12px;
+      }
+      .grid-3, .grid-2 { display: grid; gap: 14px; }
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+      .grid-2 { grid-template-columns: 1.1fr 0.9fr; }
+      .step, .principle { border-radius: 24px; padding: 18px; }
+      .num {
+        width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center;
+        background: var(--primary); color: #fff9f3; font-weight: 800; margin-bottom: 8px;
+      }
+      :root[data-theme="dark"] .num { color: #102018; }
+      .legend { flex-wrap: wrap; gap: 8px; }
+      footer { padding: 28px 0 48px; color: var(--muted); }
+      .note { font-size: 14px; }
+      .empty { padding: 18px; border-radius: 18px; background: var(--bg-2); }
+      @media (max-width: 860px) {
+        .hero, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        .nav-links a:not(.solid) { display: none; }
+        h1 { font-size: 34px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        * { animation: none !important; transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#today">تخطَّ إلى اليوم</a>
+    <header>
+      <div class="wrap nav">
+        <a class="brand" href="#top">
+          <span class="mark" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
+              <circle cx="26" cy="32" r="12" stroke="#F4C95D" stroke-width="3" />
+              <circle cx="38" cy="32" r="12" stroke="#FFF9F3" stroke-width="3" />
+              <path d="M32 37c-1.8-1.6-4.6-3.7-4.6-5.8 0-1.4 1.1-2.4 2.4-2.4 1.1 0 1.8.6 2.2 1.3.4-.7 1.1-1.3 2.2-1.3 1.3 0 2.4 1 2.4 2.4 0 2.1-2.8 4.2-4.6 5.8z" fill="#E86A6A" />
+            </svg>
+          </span>
+          وصال
+        </a>
+        <nav class="nav-links" aria-label="التنقل">
+          <a href="#today">اليوم</a>
+          <a href="#how">كيف يعمل</a>
+          <a href="#principles">المبادئ</a>
+          <button class="ghost" id="theme" type="button">المظهر</button>
+          <a class="solid" href="#add">أضف شخصًا</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <div class="wrap hero">
+        <div>
+          <div class="eyebrow">❤️ صلة الرحم، بهدوء</div>
+          <h1>من يحتاج منك أن تطمئن عليه اليوم؟</h1>
+          <p class="lede">لا تجعل الانشغال يجعلك تنسى من تحب.</p>
+          <p class="en">Do not let busyness make you forget the ones you love.</p>
+          <div class="actions">
+            <a class="solid" href="#add">ابدأ بأول شخص ❤️</a>
+            <a class="ghost" href="#how">كيف يعمل وصال</a>
+          </div>
+        </div>
+        <figure class="photo">
+          <img src="hero.jpg" width="1400" height="1050" alt="ابنة وأمها يجلسان مع الشاي، والهاتف بعيد عن اليد." />
+        </figure>
+      </div>
+
+      <section id="today">
+        <div class="wrap grid-2">
+          <div class="board">
+            <div class="board-head">
+              <div>
+                <h2 id="greet">أهلًا بك ❤️</h2>
+                <p class="sub" id="greet-sub">جدولك يظهر هنا.</p>
+              </div>
+            </div>
+            <div class="people" id="people" aria-live="polite"></div>
+            <p class="note" id="storage-note"></p>
+          </div>
+          <div class="board" id="add">
+            <h2>إضافة شخص</h2>
+            <p class="sub">الاسم وصلة القرابة والموعد تكفي. أقل من دقيقة.</p>
+            <form id="add-form">
+              <div class="form-row">
+                <label>الاسم
+                  <input id="name" name="name" required maxlength="40" placeholder="مثال: جدتي" autocomplete="off" />
+                </label>
+                <label>صلة القرابة
+                  <select id="relationship" name="relationship">
+                    <option>الأم</option>
+                    <option>الأب</option>
+                    <option>الجدة</option>
+                    <option>الجد</option>
+                    <option>الأخت</option>
+                    <option>الأخ</option>
+                    <option>العمة</option>
+                    <option>العم</option>
+                    <option>الخالة</option>
+                    <option>الخال</option>
+                    <option>الزوج/الزوجة</option>
+                    <option>صديق</option>
+                    <option>شخص آخر</option>
+                  </select>
+                </label>
+              </div>
+              <div class="form-row">
+                <label>اليوم
+                  <select id="weekday" name="weekday"></select>
+                </label>
+                <label>الوقت
+                  <input id="time" name="time" type="time" value="18:00" required />
+                </label>
+                <button class="solid" type="submit">حفظ</button>
+              </div>
+            </form>
+            <p class="note">هذا المثال يبقى على جهازك فقط. وصال ليس تطبيق مراقبة: لا رسائل، لا مكالمات، لا موقع.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="how">
+        <div class="wrap">
+          <h2>كيف يعمل</h2>
+          <p class="sub">تذكير إنساني، لا إنذار. وعدم الرد يعني فقط: لم يتم التحقق.</p>
+          <div class="grid-3">
+            <article class="step"><div class="num">١</div><h3>أضف من تحب</h3><p>الاسم وصلة القرابة فقط — وباقي الحقول اختيارية.</p></article>
+            <article class="step"><div class="num">٢</div><h3>حدد موعدًا لطيفًا</h3><p>يوميًا أو عدة أيام أو أسبوعيًا. نذكّرك في الموعد بلطف.</p></article>
+            <article class="step"><div class="num">٣</div><h3>اطمئن، ثم أكّد</h3><p>مكالمة قصيرة تكفي. عند التأكيد تتوقف التذكيرات فورًا.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="principles">
+        <div class="wrap">
+          <h2>مبادئ لا نتنازل عنها</h2>
+          <p class="sub">الطمأنينة لا تحتاج مراقبة.</p>
+          <div class="grid-3">
+            <article class="principle"><h3>ليس تطبيق مراقبة</h3><p>لا قراءة رسائل، لا تسجيل مكالمات، لا تتبع موقع، لا مراقبة سرية.</p></article>
+            <article class="principle"><h3>الموافقة أولًا</h3><p>لا تنبيه لأي طرف ثالث قبل موافقة صريحة، وقبول الجهة المدعوة، وإمكانية الإلغاء.</p></article>
+            <article class="principle"><h3>لا استنتاج للخطر</h3><p>عدم الرد لا يعني وفاة أو خطرًا. وصال لا يحل محل الطوارئ إن كان القلق حقيقيًا.</p></article>
+          </div>
+          <div class="legend" style="margin-top: 18px" aria-label="ألوان الحالة">
+            <span class="pill st-checked"><span class="dot"></span> تم الاطمئنان</span>
+            <span class="pill st-due"><span class="dot"></span> حان وقت الاطمئنان</span>
+            <span class="pill st-upcoming"><span class="dot"></span> موعد قادم</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <strong>وصال</strong>
+        <p class="note">لا تجعل الانشغال يجعلك تنسى من تحب. <a href="health.json">حالة الصفحة</a></p>
+      </div>
+    </footer>
+
+    <script>
+      const DAYS = ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"];
+      const KEY = "wesal-home-people-v1";
+      const weekday = document.getElementById("weekday");
+      DAYS.forEach((label, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = label;
+        weekday.appendChild(option);
+      });
+
+      const jsDay = new Date().getDay();
+      const todayIndex = jsDay === 0 ? 6 : jsDay - 1;
+      weekday.value = String(todayIndex);
+      const hour = new Date().getHours();
+      const greet = hour < 12 ? "صباح الخير ❤️" : hour < 18 ? "أهلًا بك ❤️" : "مساء الخير ❤️";
+
+      const samples = [
+        { id: "s1", name: "أمي نورة", relationship: "الأم", day: todayIndex, time: "18:00", status: "due" },
+        { id: "s2", name: "جدي عبدالله", relationship: "الجد", day: (todayIndex + 1) % 7, time: "11:30", status: "upcoming" },
+        { id: "s3", name: "أختي ليلى", relationship: "الأخت", day: todayIndex, time: "09:15", status: "checked" }
+      ];
+
+      function load() {
+        try {
+          const raw = localStorage.getItem(KEY);
+          if (!raw) return { people: samples, own: false };
+          const people = JSON.parse(raw);
+          if (!Array.isArray(people)) return { people: samples, own: false };
+          return { people, own: true };
+        } catch {
+          return { people: samples, own: false };
+        }
+      }
+
+      let state = load();
+
+      function save(people) {
+        state = { people, own: true };
+        localStorage.setItem(KEY, JSON.stringify(people));
+        render();
+      }
+
+      function statusLabel(status) {
+        if (status === "checked") return "تم الاطمئنان";
+        if (status === "due") return "حان وقت الاطمئنان";
+        return "موعد قادم";
+      }
+
+      function render() {
+        const due = state.people.filter((person) => person.status === "due").length;
+        document.getElementById("greet").textContent = greet;
+        document.getElementById("greet-sub").textContent = due
+          ? `لديك اليوم ${due} ${due === 1 ? "شخص يحتاج" : "أشخاص يحتاجون"} إلى الاطمئنان.`
+          : "لا أحد يحتاج الاطمئنان الآن. يوم هادئ وجميل.";
+        document.getElementById("storage-note").textContent = state.own
+          ? "أسماءك محفوظة على هذا الجهاز فقط."
+          : "مثال توضيحي. أضف اسمًا ليحل محل المثال.";
+        const root = document.getElementById("people");
+        root.replaceChildren();
+        if (!state.people.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "❤️ ابدأ بأول شخص تحب الاطمئنان عليه.";
+          root.append(empty);
+          return;
+        }
+        for (const person of state.people) {
+          const row = document.createElement("article");
+          row.className = "person";
+          const avatar = document.createElement("div");
+          avatar.className = "avatar";
+          avatar.textContent = person.name.trim().slice(0, 1) || "♥";
+          const copy = document.createElement("div");
+          copy.className = "grow";
+          const title = document.createElement("h3");
+          title.textContent = person.name;
+          const meta = document.createElement("p");
+          meta.textContent = `${person.relationship} · ${DAYS[person.day] || ""} · ${person.time}`;
+          copy.append(title, meta);
+          const pill = document.createElement("span");
+          pill.className = `pill st-${person.status}`;
+          pill.textContent = statusLabel(person.status);
+          const button = document.createElement("button");
+          button.className = "check";
+          button.type = "button";
+          button.textContent = person.status === "checked" ? "تم ❤️" : "تم الاطمئنان";
+          button.disabled = person.status === "checked";
+          button.addEventListener("click", () => {
+            const next = state.people.map((item) => item.id === person.id ? { ...item, status: "checked" } : item);
+            save(next);
+          });
+          row.append(avatar, copy, pill, button);
+          root.append(row);
+        }
+      }
+
+      document.getElementById("add-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = document.getElementById("name").value.trim();
+        if (!name) return;
+        const person = {
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          name,
+          relationship: document.getElementById("relationship").value,
+          day: Number(weekday.value),
+          time: document.getElementById("time").value,
+          status: Number(weekday.value) === todayIndex ? "due" : "upcoming"
+        };
+        const base = state.own ? state.people : [];
+        save([person, ...base].slice(0, 12));
+        event.currentTarget.reset();
+        weekday.value = String(todayIndex);
+        document.getElementById("time").value = "18:00";
+      });
+
+      document.getElementById("theme").addEventListener("click", () => {
+        const current = document.documentElement.dataset.theme
+          || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        try { localStorage.setItem("wesal-theme", next); } catch { /* ignore */ }
+      });
+
+      try {
+        const stored = localStorage.getItem("wesal-theme");
+        if (stored === "light" || stored === "dark") document.documentElement.dataset.theme = stored;
+      } catch { /* ignore */ }
+
+      render();
+    </script>
+  </body>
+</html>
