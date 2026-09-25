@@ -15,6 +15,7 @@ web-build/
 .env
 .env.*
 !.env.example
+!.env.vercel.example
 
 # local dev database (embedded PostgreSQL data dir)
 .tmp/
