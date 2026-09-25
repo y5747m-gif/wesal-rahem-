@@ -89,9 +89,9 @@ export class DtoMapper {
       relationship: contact.relationship,
       phoneMasked: this.crypto.mask(contact.phone),
       phone: null,
-      status: 'accepted',
+      status: contact.status,
       scopes: contact.scopes,
-      acceptedAt: contact.acceptedAt.toISOString(),
+      acceptedAt: contact.acceptedAt ? contact.acceptedAt.toISOString() : null,
     };
   }
 
@@ -100,7 +100,7 @@ export class DtoMapper {
     return {
       id: invitation.id,
       fullName: invitation.fullName,
-      phoneMasked: this.crypto.mask(phone),
+      phoneMasked: phone ? this.crypto.mask(phone) : '•••',
       status: invitation.status === 'accepted' ? 'invited' : (invitation.status as ContactInvitationDto['status']),
       invitedAt: invitation.invitedAt.toISOString(),
       expiresAt: invitation.expiresAt.toISOString(),

@@ -1,8 +1,8 @@
 import { Global, Inject, Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
 import { CONFIG, type AppConfig } from '../../config/configuration';
-import { buildDataSource } from './data-source';
-import { runMigrations } from './migrator';
+import { buildDataSource } from '../database/data-source';
+import { runMigrations } from '../database/migrator';
 import { DATA_SOURCE, REPOSITORIES } from './repository-tokens';
 import {
   SqlConsentRepository,

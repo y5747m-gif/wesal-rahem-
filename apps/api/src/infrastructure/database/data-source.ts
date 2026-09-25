@@ -1,5 +1,9 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import { types as pgTypes } from 'pg';
+
+// عمود DATE يُعاد كنص YYYY-MM-DD (لا ككائن Date يتأثر بمنطقة العملية الزمنية)
+pgTypes.setTypeParser(1082, (value: string) => value);
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 

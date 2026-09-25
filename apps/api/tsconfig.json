@@ -23,11 +23,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": false,
-    "resolveJsonModule": true,
-    "paths": {
-      "@wesal/shared": ["../../packages/shared/src/index.ts"],
-      "@wesal/shared/*": ["../../packages/shared/src/*"]
-    }
+    "resolveJsonModule": true
   },
   "include": ["src/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist"]

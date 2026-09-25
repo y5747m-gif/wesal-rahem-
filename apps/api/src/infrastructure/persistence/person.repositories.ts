@@ -33,6 +33,7 @@ import {
   asBoolean,
   asDate,
   asDateOrNull,
+  asLocalDateString,
   asLocalTime,
   asLocalTimeArray,
   asStringOrNull,
@@ -215,6 +216,17 @@ export class SqlPersonRepository extends SqlRepository implements PersonReposito
     return rows.map((r) => this.map(r));
   }
 
+  /** كل الأشخاص النشطين (لكل المستخدمين) — للعامل: توليد المواعيد وتحديث الحالات */
+  async listActive(limit = 5000): Promise<PersonRecord[]> {
+    const rows = await this.query<PersonRow>(
+      `SELECT ${PERSON_COLUMNS} FROM persons
+        WHERE deleted_at IS NULL AND deceased_reported_at IS NULL
+        ORDER BY created_at ASC LIMIT $1`,
+      [limit],
+    );
+    return rows.map((r) => this.map(r));
+  }
+
   async countOwned(ownerUserId: UserId): Promise<number> {
     return this.count('SELECT count(*)::int FROM persons WHERE owner_user_id = $1 AND deleted_at IS NULL', [
       ownerUserId,
@@ -364,8 +376,8 @@ export class SqlScheduleRepository extends SqlRepository implements ScheduleRepo
       timezone: row.timezone,
       active: asBoolean(row.active),
       isTemporary: asBoolean(row.is_temporary),
-      effectiveFrom: String(row.effective_from).slice(0, 10),
-      effectiveTo: row.effective_to ? String(row.effective_to).slice(0, 10) : null,
+      effectiveFrom: asLocalDateString(row.effective_from),
+      effectiveTo: row.effective_to ? asLocalDateString(row.effective_to) : null,
       createdAt: asDate(row.created_at),
       updatedAt: asDate(row.updated_at),
     };
@@ -473,7 +485,7 @@ export class SqlScheduleExceptionRepository extends SqlRepository implements Sch
     return {
       id: row.id,
       personId: row.person_id,
-      date: String(row.date).slice(0, 10),
+      date: asLocalDateString(row.date),
       action: row.action,
       times: asLocalTimeArray(row.times),
       note: asStringOrNull(row.note),
@@ -560,7 +572,7 @@ export class SqlScheduleEntryRepository extends SqlRepository implements Schedul
       id: row.id,
       personId: row.person_id,
       scheduledFor: asDate(row.scheduled_for),
-      localDate: String(row.local_date).slice(0, 10),
+      localDate: asLocalDateString(row.local_date),
       localTime: asLocalTime(row.local_time) as LocalTime,
       timezone: row.timezone,
       status: row.status,
@@ -656,7 +668,18 @@ export class SqlScheduleEntryRepository extends SqlRepository implements Schedul
          id, person_id, scheduled_for, local_date, local_time, timezone, status, source,
          exception_id, grace_until, snoozed_until, completed_at, completed_by, cancelled_at)
        VALUES ${values.join(', ')}
-       ON CONFLICT (person_id, scheduled_for) DO NOTHING
+       ON CONFLICT (person_id, scheduled_for) DO UPDATE SET
+         status = EXCLUDED.status,
+         local_date = EXCLUDED.local_date,
+         local_time = EXCLUDED.local_time,
+         timezone = EXCLUDED.timezone,
+         source = EXCLUDED.source,
+         exception_id = EXCLUDED.exception_id,
+         grace_until = EXCLUDED.grace_until,
+         snoozed_until = NULL,
+         cancelled_at = NULL,
+         updated_at = now()
+       WHERE schedule_entries.status = 'cancelled'
        RETURNING id`,
       params,
     );

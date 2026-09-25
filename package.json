@@ -28,7 +28,7 @@
     "shared:test": "npm run test --workspace @wesal/shared",
     "mobile:web": "npm run export:web --workspace @wesal/mobile",
     "mobile:start": "npm run start --workspace @wesal/mobile",
-    "preview": "node scripts/preview-server.mjs",
+    "preview": "npm run api:build && node apps/api/dist/main.js",
     "test": "npm run shared:test && npm run api:test",
     "typecheck": "npm run typecheck --workspaces --if-present"
   }

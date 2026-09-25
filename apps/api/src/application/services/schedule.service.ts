@@ -124,7 +124,10 @@ export class ScheduleGenerationService {
       toLocalDate: endLocalDate,
       limit: 5000,
     });
-    const existingKeys = new Set(existing.map((e) => `${e.localDate}|${e.localTime}`));
+    // المواعيد الملغاة (بسبب إيقاف/سفر سابق) تُعاد للحياة عند إعادة التوليد بدل تجاهلها
+    const existingKeys = new Set(
+      existing.filter((e) => e.status !== 'cancelled').map((e) => `${e.localDate}|${e.localTime}`),
+    );
 
     const basePattern = toPattern(baseSchedule);
     const tempPattern = temporarySchedule ? toPattern(temporarySchedule) : null;
@@ -587,7 +590,6 @@ export class ScheduleGenerationService {
 
     return { status: 'upcoming', openEntry: null, nextEntry };
   }
-}
 
   /**
    * حساب حالات مجموعة أشخاص دفعة واحدة — 3 استعلامات فقط بدل استعلامين لكل شخص.
@@ -664,6 +666,7 @@ export class ScheduleGenerationService {
 
     return result;
   }
+}
 
 // ─────────────────────────────── دوال مساعدة ───────────────────────────────
 

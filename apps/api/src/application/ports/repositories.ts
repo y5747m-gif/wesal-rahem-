@@ -72,6 +72,7 @@ export interface OtpRepository {
 export interface SessionRepository {
   create(data: Omit<SessionRecord, 'createdAt'>): Promise<SessionRecord>;
   findByRefreshTokenHash(hash: string): Promise<SessionRecord | null>;
+  findById(id: string): Promise<SessionRecord | null>;
   revoke(id: string, at: Date): Promise<void>;
   revokeAllForUser(userId: UserId, at: Date): Promise<void>;
 }
@@ -97,6 +98,7 @@ export interface PersonRepository {
   findByIdForUser(id: string, userId: UserId): Promise<PersonRecord | null>;
   list(filter: ListPersonsFilter): Promise<{ items: PersonRecord[]; total: number }>;
   listAllOwned(ownerUserId: UserId): Promise<PersonRecord[]>;
+  listActive(limit?: number): Promise<PersonRecord[]>;
   countOwned(ownerUserId: UserId): Promise<number>;
   create(data: Omit<PersonRecord, 'createdAt' | 'updatedAt' | 'deletedAt'>): Promise<PersonRecord>;
   update(id: string, patch: Partial<PersonRecord>): Promise<PersonRecord>;

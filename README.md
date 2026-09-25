@@ -79,8 +79,11 @@ cp apps/api/.env.example apps/api/.env   # ثم ولّد الأسرار (انظ�
 # 4) الهجرات
 npm run migrate             # تُطبَّق تلقائيًا أيضًا عند إقلاع الخادم في التطوير
 
-# 5) الخادم
-npm run api:dev             # http://localhost:4000/v1  ·  Swagger: /docs
+# 5) الخادم (واجهة الويب + API + العامل المجدول في عملية واحدة)
+npm run api:dev             # أو: npm run api:build && node apps/api/dist/main.js
+#   http://localhost:4000        → واجهة الويب (تسجيل الدخول بـ OTP — الرمز يظهر في السجل والاستجابة في وضع التطوير)
+#   http://localhost:4000/docs   → Swagger
+#   http://localhost:4000/v1/health
 
 # الاختبارات
 npm run api:test            # وحدة (منطق النطاق الخالص)

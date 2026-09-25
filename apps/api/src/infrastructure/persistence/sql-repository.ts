@@ -8,8 +8,9 @@ import type { LocalTime } from '@wesal/shared';
 export abstract class SqlRepository {
   protected constructor(protected readonly dataSource: DataSource) {}
 
-  protected query<T = Record<string, unknown>>(sql: string, params: unknown[] = []): Promise<T[]> {
-    return this.dataSource.query(sql, params) as Promise<T[]>;
+  protected async query<T = Record<string, unknown>>(sql: string, params: unknown[] = []): Promise<T[]> {
+    const raw: unknown = await this.dataSource.query(sql, params);
+    return normalizeRows<T>(raw);
   }
 
   protected async one<T = Record<string, unknown>>(sql: string, params: unknown[] = []): Promise<T | null> {
@@ -32,6 +33,19 @@ export abstract class SqlRepository {
   protected transaction<T>(work: (manager: EntityManager) => Promise<T>): Promise<T> {
     return this.dataSource.transaction(work);
   }
+}
+
+/**
+ * TypeORM (postgres) يعيد لاستعلامات UPDATE/DELETE الشكل `[rows, affectedCount]`
+ * بينما يعيد `rows` مباشرة لـ SELECT/INSERT. نوحّد الشكل هنا حتى تعمل
+ * `UPDATE … RETURNING` و`DELETE … RETURNING` مثل بقية الاستعلامات.
+ */
+export function normalizeRows<T>(raw: unknown): T[] {
+  if (!Array.isArray(raw)) return [];
+  if (raw.length === 2 && Array.isArray(raw[0]) && (typeof raw[1] === 'number' || raw[1] === null)) {
+    return raw[0] as T[];
+  }
+  return raw as T[];
 }
 
 // ─────────────────────────────── تحويل الأنواع ───────────────────────────────
@@ -111,4 +125,15 @@ export function fontScaleFromDb(value: string): 'small' | 'default' | 'large' | 
 /** بناء قائمة $1,$2,… للاستعلامات الديناميكية */
 export function placeholders(start: number, count: number): string {
   return Array.from({ length: count }, (_, i) => `$${start + i}`).join(', ');
+}
+
+/** عمود DATE في PostgreSQL يصل ككائن Date (منتصف ليل التوقيت المحلي للعملية) أو كنص — نعيده YYYY-MM-DD دون إزاحة */
+export function asLocalDateString(value: unknown): string {
+  if (value instanceof Date) {
+    const y = value.getFullYear();
+    const m = String(value.getMonth() + 1).padStart(2, '0');
+    const d = String(value.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  return String(value ?? '').slice(0, 10);
 }

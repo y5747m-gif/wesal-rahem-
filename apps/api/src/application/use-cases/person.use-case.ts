@@ -373,7 +373,7 @@ export class PersonUseCase {
           isToday: day.isToday,
           entries: day.entries.map(({ entry, person: p, status }) => ({
             ...this.mapper.toEntryDto(entry, user.locale, status),
-            person: this.mapper.toPersonCard({ person: p, status, entry, locale: user.locale, now }),
+            person: this.mapper.toPersonCard({ person: p, status: entryToPersonStatus(status), entry, locale: user.locale, now }),
           })),
         }),
       ),
@@ -835,4 +835,19 @@ function countByStatus(statuses: PersonStatus[]): Record<string, number> {
   };
   for (const status of statuses) out[status] = (out[status] ?? 0) + 1;
   return out;
+}
+
+/** تحويل حالة موعد إلى حالة شخص للعرض في بطاقة اليوم */
+function entryToPersonStatus(status: import('@wesal/shared').EntryStatus): PersonStatus {
+  switch (status) {
+    case 'checked':
+      return 'checked';
+    case 'due':
+    case 'snoozed':
+      return 'due';
+    case 'unverified':
+      return 'unverified';
+    default:
+      return 'upcoming';
+  }
 }

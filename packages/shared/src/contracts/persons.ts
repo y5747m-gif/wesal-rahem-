@@ -1,6 +1,7 @@
 import type { PersonId, UserId } from '../domain/ids';
 import type { Relationship } from '../domain/relationships';
 import type { PersonStatus } from '../domain/status';
+import type { InviteStatus } from '../domain/trusted-contact';
 import type {
   EntrySource,
   EntryStatus,
@@ -17,8 +18,8 @@ export interface ScheduleInput {
   weekdays: Weekday[];
   /** أوقات محلية HH:mm */
   times: LocalTime[];
-  /** منطقة الشخص الزمنية — تُخزَّن لكل شخص */
-  timezone: string;
+  /** منطقة الشخص الزمنية — تُخزَّن لكل شخص (افتراضيًا منطقة المستخدم/الشخص) */
+  timezone?: string;
 }
 
 export interface ScheduleDto {
@@ -136,9 +137,9 @@ export interface TrustedContactDto {
   /** يُعرض مقنّعًا في الواجهة: ‎+20•••••3456 */
   phoneMasked: string;
   phone: string | null;
-  status: 'accepted';
+  status: InviteStatus;
   scopes: string[];
-  acceptedAt: string;
+  acceptedAt: string | null;
 }
 
 export interface ContactInvitationDto {

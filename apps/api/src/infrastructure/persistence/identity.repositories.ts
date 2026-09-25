@@ -321,6 +321,11 @@ export class SqlSessionRepository extends SqlRepository implements SessionReposi
     return row ? this.map(row) : null;
   }
 
+  async findById(id: string): Promise<SessionRecord | null> {
+    const row = await this.one<SessionRow>(`SELECT ${SqlSessionRepository.COLUMNS} FROM auth_sessions WHERE id = $1`, [id]);
+    return row ? this.map(row) : null;
+  }
+
   async revoke(id: string, at: Date): Promise<void> {
     await this.query('UPDATE auth_sessions SET revoked_at = $2 WHERE id = $1 AND revoked_at IS NULL', [id, at]);
   }
