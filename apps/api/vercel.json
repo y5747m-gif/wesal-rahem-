@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "echo static-site",
+  "buildCommand": "node scripts/prepare-static.mjs",
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/health", "destination": "/health.json" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
