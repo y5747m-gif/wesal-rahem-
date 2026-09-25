@@ -1,0 +1,129 @@
+name: Sync environment to Vercel and deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Vercel target environment
+        type: choice
+        required: true
+        default: production
+        options:
+          - production
+          - preview
+      sync_env:
+        description: Sync GitHub secrets/variables to Vercel before deploy
+        type: boolean
+        required: true
+        default: true
+      deploy:
+        description: Deploy to Vercel after syncing
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vercel-${{ github.ref }}-${{ inputs.environment }}
+  cancel-in-progress: true
+
+jobs:
+  vercel:
+    name: Sync and deploy
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_ENVIRONMENT: ${{ inputs.environment }}
+
+      # Non-secret app variables can be stored as GitHub Actions variables.
+      APP_NODE_ENV: ${{ vars.NODE_ENV }}
+      API_PREFIX: ${{ vars.API_PREFIX }}
+      PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+      CORS_ORIGINS: ${{ vars.CORS_ORIGINS }}
+      DATABASE_SSL: ${{ vars.DATABASE_SSL }}
+      DATABASE_MAX_CONNECTIONS: ${{ vars.DATABASE_MAX_CONNECTIONS }}
+      JWT_ACCESS_TTL_SECONDS: ${{ vars.JWT_ACCESS_TTL_SECONDS }}
+      JWT_REFRESH_TTL_DAYS: ${{ vars.JWT_REFRESH_TTL_DAYS }}
+      OTP_TTL_MINUTES: ${{ vars.OTP_TTL_MINUTES }}
+      OTP_MAX_ATTEMPTS: ${{ vars.OTP_MAX_ATTEMPTS }}
+      OTP_LENGTH: ${{ vars.OTP_LENGTH }}
+      OTP_RESEND_COOLDOWN_SECONDS: ${{ vars.OTP_RESEND_COOLDOWN_SECONDS }}
+      OTP_DEV_MODE: ${{ vars.OTP_DEV_MODE }}
+      INVITE_TTL_DAYS: ${{ vars.INVITE_TTL_DAYS }}
+      WEB_CHECKIN_LINK_TTL_MINUTES: ${{ vars.WEB_CHECKIN_LINK_TTL_MINUTES }}
+      SCHEDULER_ENABLED: ${{ vars.SCHEDULER_ENABLED }}
+      SCHEDULER_TICK_SECONDS: ${{ vars.SCHEDULER_TICK_SECONDS }}
+      SCHEDULE_GENERATION_WEEKS_AHEAD: ${{ vars.SCHEDULE_GENERATION_WEEKS_AHEAD }}
+      DEFAULT_GRACE_PERIOD_MINUTES: ${{ vars.DEFAULT_GRACE_PERIOD_MINUTES }}
+      NOTIFICATION_DRIVER: ${{ vars.NOTIFICATION_DRIVER }}
+      SMS_DRIVER: ${{ vars.SMS_DRIVER }}
+      SMS_MAX_PER_DAY_PER_CONTACT: ${{ vars.SMS_MAX_PER_DAY_PER_CONTACT }}
+      THROTTLE_TTL_SECONDS: ${{ vars.THROTTLE_TTL_SECONDS }}
+      THROTTLE_LIMIT: ${{ vars.THROTTLE_LIMIT }}
+      THROTTLE_AUTH_TTL_SECONDS: ${{ vars.THROTTLE_AUTH_TTL_SECONDS }}
+      THROTTLE_AUTH_LIMIT: ${{ vars.THROTTLE_AUTH_LIMIT }}
+      AUDIT_ENABLED: ${{ vars.AUDIT_ENABLED }}
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+
+      # Secret app variables must be stored as GitHub Actions secrets.
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
+      JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+      FIELD_ENCRYPTION_KEY: ${{ secrets.FIELD_ENCRYPTION_KEY }}
+      OTP_FIXED_DEV_CODE: ${{ secrets.OTP_FIXED_DEV_CODE }}
+      FCM_PROJECT_ID: ${{ secrets.FCM_PROJECT_ID }}
+      FCM_CLIENT_EMAIL: ${{ secrets.FCM_CLIENT_EMAIL }}
+      FCM_PRIVATE_KEY: ${{ secrets.FCM_PRIVATE_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Vercel credentials
+        shell: bash
+        run: |
+          missing=0
+          for key in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!key}" ]; then
+              echo "Missing required GitHub secret: ${key}" >&2
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Link Vercel project
+        run: npx --yes vercel@latest pull --yes --environment=${{ inputs.environment }} --token "$VERCEL_TOKEN"
+
+      - name: Sync GitHub variables/secrets to Vercel
+        if: ${{ inputs.sync_env }}
+        run: node scripts/sync-vercel-env.mjs "${{ inputs.environment }}"
+
+      - name: Build Vercel output
+        if: ${{ inputs.deploy }}
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            npx --yes vercel@latest build --prod --token "$VERCEL_TOKEN"
+          else
+            npx --yes vercel@latest build --token "$VERCEL_TOKEN"
+          fi
+
+      - name: Deploy to Vercel
+        if: ${{ inputs.deploy }}
+        run: |
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            npx --yes vercel@latest deploy --prebuilt --prod --token "$VERCEL_TOKEN"
+          else
+            npx --yes vercel@latest deploy --prebuilt --token "$VERCEL_TOKEN"
+          fi

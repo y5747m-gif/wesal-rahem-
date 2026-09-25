@@ -63,6 +63,17 @@ wesal-rahem-/
 
 ---
 
+## النشر على Vercel
+
+تمت إضافة صفحة نشر ثابتة ومسار صحة حتى لا يرجع Vercel خطأ 404 عندما لا تكون واجهة الويب/الهاتف مكتملة بعد:
+
+- الصفحة الرئيسية: `/`
+- فحص الصحة الآمن: `/api/health` أو `/health`
+- ملف الإعداد: `vercel.json`
+- نقل متغيرات GitHub إلى Vercel: `.github/workflows/vercel-sync-and-deploy.yml`
+
+اقرأ خطوات المتغيرات والنشر في [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)، واستخدم القالب [`.env.vercel.example`](.env.vercel.example) بدون وضع أسرار حقيقية داخل المستودع.
+
 ## التشغيل محليًا
 
 ```bash

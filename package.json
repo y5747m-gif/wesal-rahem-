@@ -30,6 +30,8 @@
     "mobile:start": "npm run start --workspace @wesal/mobile",
     "preview": "node scripts/preview-server.mjs",
     "test": "npm run shared:test && npm run api:test",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build": "npm run vercel:build",
+    "vercel:build": "node scripts/vercel-build.mjs"
   }
 }
